@@ -1,7 +1,8 @@
 import random
 import time
 import uuid
-from datetime import datetime 
+import requests
+from datetime import datetime, timezone
 card_ids=['card_001','card_002','card-003','card_004','card_005','card_006','card-007']
 device_ids=['dev_01','dev_02','dev_03','dev_04']
 mcc_codes=[5732,5411,5812]
@@ -13,7 +14,7 @@ while True:
     selected_device=random.choice(device_ids)
     selected_mcc=random.choice(mcc_codes)
     selected_ip=random.choice(ip_address)
-    current_time=current_time = datetime.utcnow().isoformat()
+    current_time=current_time = datetime.now(timezone.utc).isoformat()
     # print(amount)
     if random.random()<0.05:
         amount=2500
@@ -25,8 +26,9 @@ while True:
         'merchant_mcc':selected_mcc,
         'device_id':selected_device,
         'ip_address':selected_ip,
-        'timestamp':current_time
-        
+        'timestamp':current_time        
     }
-    print(transaction)
+    response = requests.post('http://127.0.0.1:8000/predict', json=transaction)
+    print(f"Server response: {response.status_code} | {response.text}")
+
     time.sleep(1)
