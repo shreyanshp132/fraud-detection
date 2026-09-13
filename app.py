@@ -12,6 +12,8 @@ class TransactionPayload(BaseModel):
     timestamp:Annotated[str,Field(...,)]
 
 device_counts={}
+ip_counts={}
+cards_amount={}
 @app.post('/predict')
 def payload(payload:TransactionPayload):
     payment=payload.model_dump()
@@ -20,8 +22,25 @@ def payload(payload:TransactionPayload):
         device_counts[device_id]+=1
     else:
         device_counts[device_id]=1
+
+    ip_address=payment['ip_address']
+    if ip_address in ip_counts:
+        ip_counts[ip_address]+=1
+    else:
+        ip_counts[ip_address]=1
+
+    cards=payment['selected_cards']
+    Amount=payment['amount']
+    if cards in cards_amount:
+        cards_amount[cards]+=Amount
+    else:
+        cards_amount[cards]=Amount
+
     payment['device_attempt_count']=device_counts[device_id]
+    payment['ip_attempt_count'] = ip_counts[ip_address]
+    payment['card_total_amount'] = cards_amount[cards]
     print(payment)
+    
     return {
         'status':'successful',
          'message':'transaction received'
