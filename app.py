@@ -51,11 +51,18 @@ def payload(payload:TransactionPayload):
         payment['card_total_amount']
     ]]
     
-    prediction = model.predict(features)
+    risk_score=float(model.predict_proba(features)[0][1])
+    if risk_score<0.30:
+        decision= "Approve"
+    elif risk_score<=0.75:
+        decision= 'Flag'
+    else:
+        decision= "Block"
     
     return {
         "transaction_id": payment['transaction_id'], 
-        "is_fraud": int(prediction[0])
+        "risk_score": round(risk_score,4),
+        "decision": decision
     }
 
     
