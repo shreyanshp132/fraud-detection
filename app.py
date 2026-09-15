@@ -1,6 +1,7 @@
 from fastapi import FastAPI,Path, HTTPException
 from pydantic import BaseModel,Field
 from typing import Annotated 
+import joblib
 app=FastAPI()
 class TransactionPayload(BaseModel):
     transaction_id: Annotated[str,Field(...,)]
@@ -14,6 +15,7 @@ class TransactionPayload(BaseModel):
 device_counts={}
 ip_counts={}
 cards_amount={}
+model = joblib.load('fraud_detection.pkl')
 @app.post('/predict')
 def payload(payload:TransactionPayload):
     payment=payload.model_dump()
@@ -40,9 +42,21 @@ def payload(payload:TransactionPayload):
     payment['ip_attempt_count'] = ip_counts[ip_address]
     payment['card_total_amount'] = cards_amount[cards]
     print(payment)
+
+    features = [[
+        payment['amount'], 
+        payment['merchant_mcc'], 
+        payment['device_attempt_count'], 
+        payment['ip_attempt_count'], 
+        payment['card_total_amount']
+    ]]
+    
+    prediction = model.predict(features)
     
     return {
-        'status':'successful',
-         'message':'transaction received'
+        "transaction_id": payment['transaction_id'], 
+        "is_fraud": int(prediction[0])
     }
+
+    
 
