@@ -9,7 +9,7 @@ cursor=conn.cursor()
 
 Create_table_query="""
 CREATE TABLE IF NOT EXISTS
-device_stats(device_id VARCHAR PRIMARY KEY, Transaction_count INT DEFAULT 0);
+device_state(device_id VARCHAR PRIMARY KEY, Transaction_count INT DEFAULT 0);
 
 CREATE TABLE IF NOT EXISTS 
 ip_state (ip_address VARCHAR PRIMARY KEY, transaction_count INT DEFAULT 0);
