@@ -16,6 +16,10 @@ ip_state (ip_address VARCHAR PRIMARY KEY, transaction_count INT DEFAULT 0);
 
 CREATE TABLE IF NOT EXISTS
 card_state (card_id VARCHAR PRIMARY KEY, total_amount FLOAT DEFAULT 0.0);
+
+CREATE TABLE IF NOT EXISTS
+prediction (transaction_id VARCHAR(250) PRIMARY KEY, risk_score FLOAT NOT NULL, 
+decision VARCHAR(50) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 """
 cursor.execute(Create_table_query)
 conn.commit()

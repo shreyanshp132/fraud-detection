@@ -5,12 +5,12 @@ n_sample=1000
 data={
     'amount':np.random.uniform(10.0, 3000.0, n_sample),
     'merchant_mcc':np.random.choice([5732,5411,5812], n_sample),
-    'device_attempts_count':np.random.randint(1, 20, n_sample),
+    'device_attempt_count':np.random.randint(1, 20, n_sample),
     'ip_attempt_count':np.random.randint(1, 20, n_sample),
     'card_total_amount':np.random.uniform(10.0, 10000.0, n_sample)
 }
 df=pd.DataFrame(data)
-df['is_fraud']=np.where((df['amount']>2000)&(df['device_attempts_count']>10),1,0)
+df['is_fraud']=np.where((df['amount']>2000)&(df['device_attempt_count']>10),1,0)
 x=df.drop(columns=['is_fraud'])
 y=df['is_fraud']
 
